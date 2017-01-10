@@ -1,0 +1,27 @@
+Gameplay pseudocode
+
+function to make a move --> each time a move is made, what must this function do?
+
+when placing a move:
+* check if the gameOver. --> if gameOver, all clicks shld turn off, return false
+1. determine position of move
+2. determine if u have a hit --> check if square is filled (1) or 0
+3. if square is filled change css to yellow; change value of 1 to 2
+(initial count for 2 = 0; each time css is changed, counter +1)
+4. if square is not filled, change css to black, value remains 0
+--> once css has changed, remove click from that particular cell
+
+when player is playing ---> css changes are made to the COMCELL grid
+but the checks are being made against board and values also updated on board
+
+to determine whoWon:
+1. check number of 2's on the board
+2. whoever has no of 2s === 17 first wins
+3. display winner
+
+function for computer to play
+1. select grid random using math random function
+2. once the computer has played a grid, log the row, column value of that grid into an array.
+3. continue until someone wins
+start button
+pre-defined game grid that the player will play against

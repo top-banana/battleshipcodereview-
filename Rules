@@ -1,0 +1,170 @@
+Rules for BattleShip (a Milton Bradley Game)
+
+Game Objective
+
+The object of Battleship is to try and sink all of the other player's before they sink all of your ships. All of the other player's ships are somewhere on his/her board.  You try and hit them by calling out the coordinates of one of the squares on the board.  The other player also tries to hit your ships by calling out coordinates.  Neither you nor the other player can see the other's board so you must try to guess where they are.  Each board in the physical game has two grids:  the lower (horizontal) section for the player's ships and the upper part (vertical during play) for recording the player's guesses.
+
+Starting a New Game
+
+Each player places the 7 ships somewhere on their board.  The ships can only be placed vertically or horizontally. Diagonal placement is not allowed. No part of a ship may hang off the edge of the board.  Ships may not overlap each other.  No ships may be placed on another ship. No ship can touch another ship (i.e. be positioned just beside it )
+
+Once the guessing begins, the players may not move the ships.
+
+The 5 ships are:  Carrier (occupies 5 spaces, 1 px), Battleship (4, 1px), Cruiser/Submarine (3, 2px), and Patrol boat (2, 1px).
+
+Playing the Game
+Game logic
+
+1. player vs computer
+2. Message board on the top of the screen to indicate which player's turn it is
+
+GAME HAS NOT STARTED
+for player to mark out the spots
+option 1: click the square to position the ship
+ - second single click: rotate the ship
+from the second move onwards, every time a square is being clicked:
+1. check if there is anything beside or adjacent to it.
+2. if yes, do not allow the ship to be placed there
+3. if no, ship can be placed at the spot
+
+OR
+option 2: drag and drop option
+1. list of buttons featuring the diff types of ships on the side panel (https://kortaggio.github.io/battleboat/)
+2. buttons:
+Patrol Boat - encoded for 2 squares
+Submarine - encoded for 3 squares
+Destroyer - encoded for 3 squares
+Battleship - encoded for 4 squares
+Aircraft Carrier - encoded for 5 squares
+Rotate
+
+for each button:
+1. click it to select that specific ship
+3. ON THE BOARD, the cursor will highlight the number of squares that the button was encoded for
+4. click the board to place the ship
+--> trigger a function to check if the ship can be placed there
+--> if there are objects beside it --> u cannot click the adjacent spot
+--> if there are objects diagonally across it --> u cannot place it there
+===> *** which means that after each ship is being placed, the adjacent squares n squares diagonal to it are "disabled" to prevent further clicking
+===> when player tries to click the spot, put warning, but mouse still encodes for the number of grids n grid position it has (no info is lost)
+
+ --> if the mouse leaves the board without clicking it then nothing happens
+ --> even if mouse clicks anywhere outside the board, it is still "encoded" with information from that specific button so that when it goes back to board, it will still display the number of squares for the button that it previously clicked for
+5. once ship has been successfully placed
+--> hide the button from the panel
+--> ONE click: rotates the ship 90 degree angle from the first square (vertical --> horizontal)
+--> DOUBLE click: "activates" the ship so that u can move its position AS IS --> drag and drop function
+--> same click functions apply at the new position
+
+the default state for each ship is vertical.
+
+** for click functions:
+1. each grid must be marked with an XYZ co-ordinate
+--> to place ships, Z co-ordinate cannot be clicked if there is already another ship in that position
+--> also for the computer to know that if a spot has been marked, only click the XY (or X, -Y) co-ordinates
+
+How does computer set its board?
+- player cannot see the choices the computer has made, only the spots which he has marked
+- hard code a couple of states for computer to pick from
+- initially, randomly generate a game pattern for the player
+
+--> pattern changes dependent on where the player tends to click :
+1. player tends to click in the center first
+--> set the ships to be placed at the sides concentrate on the sides
+2. player tends to click at the corners first
+--> set ships to be placed away from the corners
+3. player tends to click based on sides --> center
+4. player tends to click center --> side
+5. player tends to click up --> down
+6. player tends to click down --> up
+7. player tends to click left --> right
+8. player tends to click right --> left
+
+how to teach the computer where to click?
+click based
+IF math.random --> clicks a random position
+IF the click uncovers an object, 4 options --> top, right, bottom, left  (in a clockwise direction)*do not click a vertical position
+this means that once a click has been made, the next option is to click the box above it
+
+2. if there the box above it has nothing --> click to the right of the obj
+--> if the square to right of it uncovers another segment of the ship,
+--> the next round, continue clicking to the right until ship has sunk
+--> after ship has sunk, regenerate a random grid as next move
+
+3. if the right of it has nothing, click to the bottom of the initially marked grid
+--> if square below it uncovers another segment of the ship,
+--> the next round, continue clicking continuously in this direction until ship has sunk
+--> after ship has sunk, regenerate a random grid as next move
+
+
+4. if square below it has nothing, click to left of the initially marked grid
+--> if square below it uncovers another segment of the ship,
+--> the next round, continue clicking continuously in this direction until ship has sunk
+--> after ship has sunk, regenerate a random grid as next move
+
+How should the computer be taught to click?
+---> initially clicks the boxes in a random manner
+---> then shld be taught to click depending on how player tends to place his ships
+
+player tends to place ships:
+1. within the center of the board
+--> click within center first (radial or concentric)(center --> outside)
+2. at the side of the board (boundary)
+--> click from the side first (radial or concentric)(outside ---> in)
+3. vertically
+4. horizontally
+5. which general area does player tend to target
+
+for each click on the computers board:
+1. record WHERE player clicked and IN WHICH SEQUENCE
+---> so the computer must record the clicks and WHEN it was made
+---> there must be 3 variables defined for the board
+i.e for player
+- record where the player has placed his - mark it with 1
+- IF compt hits where the ship is, change value of spot from 1 - 2
+- ELSE IF compt hits an empty spot, the spot is marked with 3
+
+2. push this info into a grid which is stored such that the computer can analyze for any patterns and combat the player
+
+
+Once player has defined his board, click start to activate the game.
+--> Once game has started, player cannot change your ship position
+
+START GAME
+playTurn
+every time a move is made by the other player:
+a. determine if gameOver
+if yes
+- do not allow game to continue
+if NO
+when move is being made
+c. check if there is an object there or not
+d. if there is an object there (check if ifMoveAllowed), mark the spot with a X
+--> prevent the player from clicking the marked square again - click off
+--> the surrounding squares which are diagonal or just beside the marked object should also be marked with * since diagonal placement is not allowed and ships cannot be positioned beside each other
+--> switch the turn
+e. else if there is no object there, mark with a 0
+--> click off for that square
+--> end turn
+
+ALSO check whether after move is being made, does anyone win.
+if win --> trigger gameOver
+
+if player is 1
+- change to player 2
+- 'deactivate' player 1's board such that he cannot make a move whilst its player 2's turn
+- if player 1 tries to click his board whilst it is deactivated, display "Wait for player 2 to finish his turn"
+and vice versa.
+
+check whoWon
+check if move is allowed
+
+4. reset the board
+- grid goes back to 0 state
+- regenerate the entire range of random numbers
+
+assumptions:
+1. player 1 starts
+2. computer generates number randomly
+(is math random truly random?)
+3. once the number has been called, it must be excluded from the math random set so the computer cannot regenerate it again.

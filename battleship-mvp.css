@@ -1,0 +1,39 @@
+/* On the flex container */
+body {
+  width: 450px;
+   display: -webkit-flex;
+   display: flex;
+   -webkit-align-items: center;
+   align-items: center;
+   -webkit-justify-content: center;
+   justify-content: center;
+   /* You can set flex-wrap and flex-direction individually */
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   -webkit-flex-wrap: wrap;
+   flex-wrap: wrap;
+   /* Or do it all in one line with flex flow */
+   /*-webkit-flex-flow: row wrap;
+   flex-flow: row wrap;*/
+   /* tweak the where items line up on the row */
+   /* valid values are: flex-start, flex-end, space-between, space-around, stretch */
+   /*-webkit-align-content: flex-end;
+   align-content: flex-end;*/
+}
+
+.cell {
+  border: 2px solid #000000;
+  width: 40px;
+  height: 40px;
+}
+
+.comcell {
+  border: 2px solid red;
+  width: 40px;
+  height: 40px;
+}
+
+.shipbutton {
+  padding: 12px;
+  margin-left: 73px;
+}
